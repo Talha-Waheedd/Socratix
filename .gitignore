@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.Python
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Build/IDE
+.vscode/
+.idea/
+*.swp
+
+# Phase 1: generated visualization output
+output/
+
+# Later phases (added preemptively so secrets / large artifacts never get committed)
+*.sqlite
+*.sqlite3
+*.db
+chroma_db/
+.chroma/
+student_profiles/
+.env
+.env.*
+!.env.example

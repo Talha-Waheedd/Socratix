@@ -1,0 +1,357 @@
+{
+  "version": "1.0",
+  "domain": "python_fundamentals",
+  "description": "Concept graph for Python programming fundamentals through basic data structures, algorithms, and introductory time complexity. Edit this file to add, remove, or re-link concepts; the graph builder picks up changes on next load.",
+  "concepts": [
+    {
+      "id": "running_python",
+      "name": "Running Python",
+      "description": "How to execute Python code: the interpreter, scripts (.py files), and the REPL.",
+      "category": "foundations",
+      "prerequisites": []
+    },
+    {
+      "id": "variables",
+      "name": "Variables and Assignment",
+      "description": "Binding names to values with =, naming rules, and reassignment.",
+      "category": "foundations",
+      "prerequisites": ["running_python"]
+    },
+    {
+      "id": "data_types",
+      "name": "Basic Data Types",
+      "description": "Built-in primitive types: int, float, str, bool, and None.",
+      "category": "foundations",
+      "prerequisites": ["variables"]
+    },
+    {
+      "id": "operators",
+      "name": "Arithmetic and Comparison Operators",
+      "description": "Arithmetic (+ - * / // % **) and comparison (== != < > <= >=) operators.",
+      "category": "foundations",
+      "prerequisites": ["data_types"]
+    },
+    {
+      "id": "type_conversion",
+      "name": "Type Conversion",
+      "description": "Converting between types with int(), float(), str(), bool().",
+      "category": "foundations",
+      "prerequisites": ["data_types"]
+    },
+    {
+      "id": "input_output",
+      "name": "Input and Output",
+      "description": "Reading from the user with input() and writing with print(); input() always returns a string.",
+      "category": "foundations",
+      "prerequisites": ["variables", "type_conversion"]
+    },
+    {
+      "id": "boolean_logic",
+      "name": "Boolean Logic",
+      "description": "Boolean values True/False and the logical operators and, or, not.",
+      "category": "control_flow",
+      "prerequisites": ["operators"]
+    },
+    {
+      "id": "if_statements",
+      "name": "If / Elif / Else Statements",
+      "description": "Branching execution based on boolean conditions.",
+      "category": "control_flow",
+      "prerequisites": ["boolean_logic"]
+    },
+    {
+      "id": "while_loops",
+      "name": "While Loops",
+      "description": "Repeating a block while a condition remains True; the risk of infinite loops.",
+      "category": "control_flow",
+      "prerequisites": ["if_statements"]
+    },
+    {
+      "id": "for_loops",
+      "name": "For Loops",
+      "description": "Iterating over the elements of any iterable (list, string, range, etc.).",
+      "category": "control_flow",
+      "prerequisites": ["if_statements"]
+    },
+    {
+      "id": "range_function",
+      "name": "The range() Function",
+      "description": "Generating arithmetic sequences for indexed iteration: range(stop), range(start, stop), range(start, stop, step).",
+      "category": "control_flow",
+      "prerequisites": ["for_loops", "data_types"]
+    },
+    {
+      "id": "break_continue",
+      "name": "break and continue",
+      "description": "Early loop termination with break and skipping to the next iteration with continue.",
+      "category": "control_flow",
+      "prerequisites": ["while_loops", "for_loops"]
+    },
+    {
+      "id": "function_basics",
+      "name": "Defining Functions",
+      "description": "Defining reusable blocks of code with def and calling them.",
+      "category": "functions",
+      "prerequisites": ["if_statements"]
+    },
+    {
+      "id": "parameters_arguments",
+      "name": "Parameters and Arguments",
+      "description": "The distinction between parameters (in the definition) and arguments (in the call); positional vs keyword arguments.",
+      "category": "functions",
+      "prerequisites": ["function_basics"]
+    },
+    {
+      "id": "return_values",
+      "name": "Return Values",
+      "description": "Returning data from a function with return; functions without return implicitly return None.",
+      "category": "functions",
+      "prerequisites": ["function_basics"]
+    },
+    {
+      "id": "default_arguments",
+      "name": "Default Argument Values",
+      "description": "Giving parameters default values so callers may omit them.",
+      "category": "functions",
+      "prerequisites": ["parameters_arguments"]
+    },
+    {
+      "id": "scope",
+      "name": "Variable Scope",
+      "description": "Local vs enclosing vs global vs built-in scopes (LEGB rule).",
+      "category": "functions",
+      "prerequisites": ["function_basics"]
+    },
+    {
+      "id": "lambda_functions",
+      "name": "Lambda Functions",
+      "description": "Anonymous one-expression functions defined with lambda.",
+      "category": "functions",
+      "prerequisites": ["function_basics", "return_values"]
+    },
+    {
+      "id": "string_basics",
+      "name": "String Basics",
+      "description": "String literals with quotes, escape sequences, and concatenation with +.",
+      "category": "strings",
+      "prerequisites": ["data_types"]
+    },
+    {
+      "id": "string_indexing",
+      "name": "String Indexing and Slicing",
+      "description": "Accessing characters by index and substrings via slicing; negative indices.",
+      "category": "strings",
+      "prerequisites": ["string_basics", "operators"]
+    },
+    {
+      "id": "string_methods",
+      "name": "Common String Methods",
+      "description": "Methods such as lower(), upper(), strip(), split(), join(), replace(), find().",
+      "category": "strings",
+      "prerequisites": ["string_basics"]
+    },
+    {
+      "id": "string_formatting",
+      "name": "String Formatting",
+      "description": "Building formatted strings with f-strings and str.format().",
+      "category": "strings",
+      "prerequisites": ["string_basics", "type_conversion"]
+    },
+    {
+      "id": "list_basics",
+      "name": "List Basics",
+      "description": "Creating lists with [...], list elements, length, and basic operations.",
+      "category": "lists",
+      "prerequisites": ["data_types"]
+    },
+    {
+      "id": "list_indexing_slicing",
+      "name": "List Indexing and Slicing",
+      "description": "Accessing list elements by index and producing sublists via slicing.",
+      "category": "lists",
+      "prerequisites": ["list_basics"]
+    },
+    {
+      "id": "list_methods",
+      "name": "List Methods",
+      "description": "Mutating methods such as append(), insert(), remove(), pop(), sort(), reverse().",
+      "category": "lists",
+      "prerequisites": ["list_basics"]
+    },
+    {
+      "id": "list_iteration",
+      "name": "Iterating Over Lists",
+      "description": "Walking a list element by element with a for loop.",
+      "category": "lists",
+      "prerequisites": ["list_basics", "for_loops"]
+    },
+    {
+      "id": "list_comprehension",
+      "name": "List Comprehensions",
+      "description": "Concise list construction with [expr for x in iterable if condition].",
+      "category": "lists",
+      "prerequisites": ["list_iteration", "if_statements"]
+    },
+    {
+      "id": "tuples",
+      "name": "Tuples",
+      "description": "Ordered, fixed-size sequences created with parentheses; commonly used for grouped return values.",
+      "category": "tuples_sets",
+      "prerequisites": ["list_basics"]
+    },
+    {
+      "id": "sets",
+      "name": "Sets",
+      "description": "Unordered collections of unique elements created with {...} or set().",
+      "category": "tuples_sets",
+      "prerequisites": ["list_basics"]
+    },
+    {
+      "id": "set_operations",
+      "name": "Set Operations",
+      "description": "Mathematical operations on sets: union, intersection, difference, symmetric difference.",
+      "category": "tuples_sets",
+      "prerequisites": ["sets"]
+    },
+    {
+      "id": "dict_basics",
+      "name": "Dictionary Basics",
+      "description": "Key/value mappings created with {key: value, ...}; accessing values by key.",
+      "category": "dictionaries",
+      "prerequisites": ["data_types"]
+    },
+    {
+      "id": "dict_methods",
+      "name": "Dictionary Methods",
+      "description": "Methods such as keys(), values(), items(), get(), update(), pop().",
+      "category": "dictionaries",
+      "prerequisites": ["dict_basics"]
+    },
+    {
+      "id": "dict_iteration",
+      "name": "Iterating Over Dictionaries",
+      "description": "Looping over keys, values, or items() pairs in a dictionary.",
+      "category": "dictionaries",
+      "prerequisites": ["dict_basics", "for_loops"]
+    },
+    {
+      "id": "nested_dicts",
+      "name": "Nested Dictionaries",
+      "description": "Dictionaries whose values are themselves dictionaries; navigating multi-level data.",
+      "category": "dictionaries",
+      "prerequisites": ["dict_basics", "dict_iteration"]
+    },
+    {
+      "id": "recursion_basics",
+      "name": "Recursion Basics",
+      "description": "Solving a problem by having a function call itself on a smaller instance.",
+      "category": "recursion",
+      "prerequisites": ["function_basics", "return_values"]
+    },
+    {
+      "id": "base_case",
+      "name": "Recursion Base Case",
+      "description": "The terminating condition that stops the recursion and returns a direct answer.",
+      "category": "recursion",
+      "prerequisites": ["recursion_basics", "if_statements"]
+    },
+    {
+      "id": "recursive_case",
+      "name": "Recursive Case",
+      "description": "The branch of the function that reduces the problem and recurses; combining sub-results.",
+      "category": "recursion",
+      "prerequisites": ["recursion_basics", "base_case"]
+    },
+    {
+      "id": "recursion_vs_iteration",
+      "name": "Recursion vs Iteration",
+      "description": "When to prefer recursion over loops; tradeoffs in clarity and call-stack cost.",
+      "category": "recursion",
+      "prerequisites": ["recursive_case", "while_loops"]
+    },
+    {
+      "id": "linear_search",
+      "name": "Linear Search",
+      "description": "Scanning a sequence element by element until a target is found or the end is reached.",
+      "category": "algorithms",
+      "prerequisites": ["list_iteration", "if_statements"]
+    },
+    {
+      "id": "binary_search",
+      "name": "Binary Search",
+      "description": "Repeatedly halving a sorted sequence to locate a target; faster than linear search.",
+      "category": "algorithms",
+      "prerequisites": ["linear_search", "recursion_basics", "list_indexing_slicing"]
+    },
+    {
+      "id": "bubble_sort",
+      "name": "Bubble Sort",
+      "description": "Sorting by repeatedly swapping adjacent out-of-order elements until the list is sorted.",
+      "category": "algorithms",
+      "prerequisites": ["list_iteration", "list_indexing_slicing"]
+    },
+    {
+      "id": "selection_sort",
+      "name": "Selection Sort",
+      "description": "Sorting by repeatedly selecting the smallest remaining element and placing it at the front.",
+      "category": "algorithms",
+      "prerequisites": ["bubble_sort", "list_methods"]
+    },
+    {
+      "id": "big_o_intro",
+      "name": "Introduction to Big O Notation",
+      "description": "Describing how an algorithm's running time grows as input size grows, ignoring constants.",
+      "category": "complexity",
+      "prerequisites": ["function_basics"]
+    },
+    {
+      "id": "time_complexity",
+      "name": "Time Complexity Analysis",
+      "description": "Counting the dominant operations in code and expressing the result in Big O.",
+      "category": "complexity",
+      "prerequisites": ["big_o_intro", "for_loops"]
+    },
+    {
+      "id": "common_complexities",
+      "name": "Common Complexity Classes",
+      "description": "Understanding O(1), O(log n), O(n), O(n log n), and O(n^2) and where each appears in practice.",
+      "category": "complexity",
+      "prerequisites": ["time_complexity", "binary_search", "bubble_sort"]
+    },
+    {
+      "id": "exceptions_basics",
+      "name": "Exceptions",
+      "description": "What an exception is and the common built-in exception types (ValueError, TypeError, KeyError, etc.).",
+      "category": "error_handling",
+      "prerequisites": ["function_basics", "type_conversion"]
+    },
+    {
+      "id": "try_except",
+      "name": "try / except Blocks",
+      "description": "Catching exceptions so the program can recover instead of crashing.",
+      "category": "error_handling",
+      "prerequisites": ["exceptions_basics"]
+    },
+    {
+      "id": "raising_exceptions",
+      "name": "Raising Exceptions",
+      "description": "Signalling error conditions yourself with the raise statement.",
+      "category": "error_handling",
+      "prerequisites": ["try_except", "function_basics"]
+    },
+    {
+      "id": "import_modules",
+      "name": "Importing Modules",
+      "description": "Using code from other files or packages with import and from ... import ....",
+      "category": "modules",
+      "prerequisites": ["function_basics"]
+    },
+    {
+      "id": "standard_library",
+      "name": "Python Standard Library",
+      "description": "Using batteries-included modules such as math, random, os, json without installing anything.",
+      "category": "modules",
+      "prerequisites": ["import_modules", "function_basics"]
+    }
+  ]
+}
