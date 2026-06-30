@@ -1,0 +1,125 @@
+{
+  "version": "1.0",
+  "misconceptions": [
+    {
+      "id": "recursion_loop_inside",
+      "concept_id": "recursion_basics",
+      "misconception": "Recursion needs a loop inside it to make things repeat.",
+      "correction": "Recursion repeats by having the function call ITSELF on a smaller version of the problem. The recursive call is what creates the repetition - no loop is needed inside the function body."
+    },
+    {
+      "id": "base_case_first_line",
+      "concept_id": "base_case",
+      "misconception": "The base case is the first line of a recursive function and always runs before anything else.",
+      "correction": "The base case is the TERMINATING condition that stops recursion and returns directly. It runs only when the input is small enough to answer without recursing further; on larger inputs the recursive case runs first."
+    },
+    {
+      "id": "variables_old_value_attr",
+      "concept_id": "variables",
+      "misconception": "When you reassign a variable, Python keeps the old value accessible as an attribute.",
+      "correction": "When you reassign a variable in Python, the name is simply rebound to the new value. The old value is no longer accessible through that name and is garbage-collected if no other reference exists."
+    },
+    {
+      "id": "variable_is_a_box",
+      "concept_id": "variables",
+      "misconception": "A Python variable is a box that holds a value.",
+      "correction": "A Python variable is a NAME that REFERS to an object in memory, not a container that holds it. Multiple variables can refer to the same object (a = [1]; b = a)."
+    },
+    {
+      "id": "for_loop_only_lists",
+      "concept_id": "for_loops",
+      "misconception": "for loops can only iterate over lists.",
+      "correction": "for loops iterate over ANY iterable: lists, tuples, strings, dicts, sets, ranges, generators, file objects, and any object that implements __iter__."
+    },
+    {
+      "id": "while_runs_once",
+      "concept_id": "while_loops",
+      "misconception": "A while loop always runs at least once.",
+      "correction": "A while loop checks its condition BEFORE the first iteration. If the condition is False initially, the loop body never runs. You may be thinking of do-while loops in other languages; Python has no do-while."
+    },
+    {
+      "id": "lists_fixed_size",
+      "concept_id": "list_basics",
+      "misconception": "Python lists have a fixed size like arrays in C or Java.",
+      "correction": "Python lists are dynamic. You can append, insert, or remove elements at any time. There is no need to declare a size upfront."
+    },
+    {
+      "id": "negative_index_error",
+      "concept_id": "list_indexing_slicing",
+      "misconception": "Negative indices throw an IndexError in Python.",
+      "correction": "Negative indices count from the END of the sequence: list[-1] is the last element, list[-2] the second to last, and so on. They only raise IndexError if their absolute value exceeds the length."
+    },
+    {
+      "id": "dict_keys_strings_only",
+      "concept_id": "dict_basics",
+      "misconception": "Dictionary keys must be strings.",
+      "correction": "Dictionary keys can be any HASHABLE object: strings, numbers, tuples, frozensets, None, booleans, and more. They cannot be mutable types like lists, dicts, or sets."
+    },
+    {
+      "id": "tuples_just_immutable_lists",
+      "concept_id": "tuples",
+      "misconception": "Tuples are just lists you can not change - there is no other meaningful difference.",
+      "correction": "Beyond immutability, tuples are hashable (can be dict keys / set members), use less memory, are slightly faster, and signal intent: a tuple typically means 'a fixed-shape grouping' (like coordinates) while a list means 'a collection of similar items'."
+    },
+    {
+      "id": "strings_mutable",
+      "concept_id": "string_basics",
+      "misconception": "You can change a character in a string by assigning to an index: s[0] = 'A'.",
+      "correction": "Strings in Python are IMMUTABLE. To change a character you must build a new string, e.g. s = 'A' + s[1:]."
+    },
+    {
+      "id": "function_must_return",
+      "concept_id": "function_basics",
+      "misconception": "Functions must return a value, otherwise they crash.",
+      "correction": "Functions without a return statement (or with a bare 'return') implicitly return None. This is perfectly valid; many functions exist for side effects (print, list.append) and intentionally return None."
+    },
+    {
+      "id": "code_after_return_runs",
+      "concept_id": "return_values",
+      "misconception": "Code after a return statement still runs.",
+      "correction": "A return statement immediately exits the function. Any code after it inside that branch is unreachable. (try/finally is the only exception: finally blocks run even after a return.)"
+    },
+    {
+      "id": "local_visible_everywhere",
+      "concept_id": "scope",
+      "misconception": "Variables declared inside a function are accessible anywhere in the program.",
+      "correction": "Variables defined inside a function are LOCAL to that function. Outside code cannot see them. To share data, pass arguments in or return values out."
+    },
+    {
+      "id": "lambda_multi_statement",
+      "concept_id": "lambda_functions",
+      "misconception": "A lambda can have multiple statements separated by semicolons.",
+      "correction": "A lambda must contain a SINGLE expression. For multiple statements or any statement (if/for/print/etc), use a normal def function."
+    },
+    {
+      "id": "linear_search_fastest",
+      "concept_id": "linear_search",
+      "misconception": "Linear search is the fastest way to find an element in a sequence.",
+      "correction": "Linear search is O(n) and only optimal for unsorted data or very small inputs. If the data is sorted, binary search at O(log n) is dramatically faster on large inputs."
+    },
+    {
+      "id": "binary_search_unsorted",
+      "concept_id": "binary_search",
+      "misconception": "Binary search works on any list, regardless of order.",
+      "correction": "Binary search requires the input to be SORTED. On unsorted input it may miss the element entirely. If you need fast lookup on unsorted data, build a set or dict first."
+    },
+    {
+      "id": "on_always_faster",
+      "concept_id": "big_o_intro",
+      "misconception": "An O(n) algorithm is always faster than an O(n^2) algorithm.",
+      "correction": "Big O ignores constants. For small inputs an O(n^2) algorithm with low constants can be faster than an O(n) one with high constants. Big O describes growth as n becomes large, not speed at any specific n."
+    },
+    {
+      "id": "more_lines_slower",
+      "concept_id": "time_complexity",
+      "misconception": "Adding more lines of code makes a function slower in Big O terms.",
+      "correction": "Big O measures how many operations grow WITH THE INPUT SIZE, not the line count. A 100-line function that does one pass over the data is O(n); a 5-line function with a nested loop is O(n^2)."
+    },
+    {
+      "id": "try_except_syntax",
+      "concept_id": "exceptions_basics",
+      "misconception": "try/except is used to catch syntax errors in your code.",
+      "correction": "Syntax errors are detected BEFORE the program runs and cannot be caught with try/except. try/except handles RUNTIME exceptions: ValueError, TypeError, KeyError, ZeroDivisionError, IOError, and so on."
+    }
+  ]
+}

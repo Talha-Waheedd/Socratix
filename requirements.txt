@@ -8,3 +8,8 @@ pyvis==0.3.2
 
 # Phase 2 - local LLM via Ollama REST API (http://localhost:11434)
 requests==2.32.3
+
+# Phase 6 - misconception vector store (local ChromaDB + sentence-transformers)
+# Use >= pins: chromadb==0.5.5 requires numpy<2 and may not install on Python 3.14+.
+chromadb>=0.5.5
+sentence-transformers>=3.0.1
