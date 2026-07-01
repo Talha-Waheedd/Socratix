@@ -1,18 +1,12 @@
-# Socratix dependencies (cumulative).
-# Phase 10 will pin the full final set in one block; until then each phase
-# appends its additions in order so partial installs stay reproducible.
+# Socratix — pinned dependencies (final stack)
+#
+# Python 3.10+ required. Tested on 3.14.
+# chromadb>= and streamlit>= use flexible pins because chromadb==0.5.5
+# requires numpy<2 and may fail to install on Python 3.14+.
 
-# Phase 1 - concept graph + visualization
 networkx==3.3
 pyvis==0.3.2
-
-# Phase 2 - local LLM via Ollama REST API (http://localhost:11434)
 requests==2.32.3
-
-# Phase 6 - misconception vector store (local ChromaDB + sentence-transformers)
-# Use >= pins: chromadb==0.5.5 requires numpy<2 and may not install on Python 3.14+.
 chromadb>=0.5.5
 sentence-transformers>=3.0.1
-
-# Phase 9 - Streamlit frontend
 streamlit>=1.39.0

@@ -334,17 +334,22 @@ def student_profile_to_db(
     conn: sqlite3.Connection,
     profile: StudentProfile,
     session_id: int,
+    *,
+    conversation_offset: int | None = None,
 ) -> None:
     """Persist a :class:`StudentProfile` to SQLite.
 
     Upserts the student row, all concept statuses, and any conversation
-    entries not yet written for ``session_id`` (tracked by comparing the
-    in-memory history length to the row count already stored).
+    entries not yet written for ``session_id``.
 
     Args:
         conn: Open database connection.
         profile: In-session profile to flush.
         session_id: Active session receiving new conversation rows.
+        conversation_offset: If set, append only
+            ``profile.conversation_history[conversation_offset:]``. The
+            Streamlit app uses this when starting a fresh in-memory chat
+            for a new session while reusing saved concept statuses.
     """
     upsert_student(
         conn,
@@ -373,8 +378,11 @@ def student_profile_to_db(
             last_seen=str(record.get("last_seen", utc_now_iso())),
         )
 
-    persisted = _conversation_count(conn, session_id)
-    new_entries = profile.conversation_history[persisted:]
+    if conversation_offset is not None:
+        start_idx = conversation_offset
+    else:
+        start_idx = _conversation_count(conn, session_id)
+    new_entries = profile.conversation_history[start_idx:]
     for entry in new_entries:
         payload = entry.get("result") or entry.get("payload")
         if payload is None and entry.get("kind") in {

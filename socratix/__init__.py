@@ -5,4 +5,4 @@ Python-fundamentals concepts, a NetworkX DiGraph builder with validation, and
 a Pyvis-based interactive visualization.
 """
 
-__version__ = "0.1.0"
+__version__ = "1.0.0"

@@ -10,6 +10,8 @@ First launch also builds the local ChromaDB misconception index if missing.
 
 from __future__ import annotations
 
+import sqlite3
+import threading
 from pathlib import Path
 from typing import Any
 
@@ -51,8 +53,6 @@ from socratix.teaching_agent import (
 from socratix.visualize import STATUS_COLORS, visualize_graph
 
 REPO_ROOT = Path(__file__).resolve().parent
-GRAPH_HTML = REPO_ROOT / "output" / "concept_graph.html"
-
 
 # ---------------------------------------------------------------------------
 # Cached resources (expensive to reload every Streamlit rerun)
@@ -66,33 +66,48 @@ def cached_base_graph() -> nx.DiGraph:
 
 
 @st.cache_resource
-def cached_misconception_collection():
-    """Open or seed the local ChromaDB misconception collection."""
-    if not DEFAULT_PERSIST_DIR.exists() or not any(DEFAULT_PERSIST_DIR.iterdir()):
-        return build_misconception_db(DEFAULT_MISCONCEPTIONS_PATH)
-    try:
-        return get_collection()
-    except Exception:
-        return build_misconception_db(DEFAULT_MISCONCEPTIONS_PATH)
-
-
-@st.cache_resource
 def cached_concept_choices() -> list[tuple[str, str]]:
     """Return (id, display name) pairs for the target-topic picker."""
     data = load_concepts()
     return [(c["id"], c["name"]) for c in data["concepts"]]
 
 
-def get_db_connection():
-    """Return a SQLite connection for this Streamlit browser session.
+def get_db_connection() -> sqlite3.Connection:
+    """Return a SQLite connection safe across Streamlit thread reruns.
 
-    Stored in ``st.session_state`` (not ``@st.cache_resource``) because
-    Streamlit reruns can execute on different threads; a cached connection
-    from another thread triggers ``sqlite3.ProgrammingError``.
+    Streamlit may execute the script on different worker threads between
+    clicks. We recreate the connection when the thread id changes, and
+    ``init_db`` uses ``check_same_thread=False`` as a second safeguard.
     """
-    if "db_conn" not in st.session_state:
+    tid = threading.get_ident()
+    if (
+        "db_conn" not in st.session_state
+        or st.session_state.get("db_thread_id") != tid
+    ):
         st.session_state.db_conn = init_db(DEFAULT_DB_PATH)
+        st.session_state.db_thread_id = tid
     return st.session_state.db_conn
+
+
+def get_misconception_collection():
+    """Load ChromaDB once per browser session (not ``@st.cache_resource``).
+
+    Cached resources can trigger the same cross-thread SQLite/Chroma errors
+    when the user clicks Start session a second time with a new topic.
+    """
+    if "misconception_collection" not in st.session_state:
+        if not DEFAULT_PERSIST_DIR.exists() or not any(DEFAULT_PERSIST_DIR.iterdir()):
+            st.session_state.misconception_collection = build_misconception_db(
+                DEFAULT_MISCONCEPTIONS_PATH
+            )
+        else:
+            try:
+                st.session_state.misconception_collection = get_collection()
+            except Exception:
+                st.session_state.misconception_collection = build_misconception_db(
+                    DEFAULT_MISCONCEPTIONS_PATH
+                )
+    return st.session_state.misconception_collection
 
 
 # ---------------------------------------------------------------------------
@@ -114,6 +129,7 @@ def _init_session_state() -> None:
         "teaching_retry_n": 0,
         "previous_analogy": None,
         "awaiting_followup": False,
+        "conv_persisted_idx": 0,
         "status_message": "Start a session from the sidebar to begin.",
     }
     for key, value in defaults.items():
@@ -140,7 +156,7 @@ def _misconception_correction(profile: StudentProfile, concept_id: str) -> str |
     summary = record.get("misconception_summary")
     if not summary:
         return None
-    collection = cached_misconception_collection()
+    collection = get_misconception_collection()
     from socratix.misconceptions import find_correction
 
     match = find_correction(collection, str(summary))
@@ -154,7 +170,22 @@ def _persist_profile() -> None:
             conn,
             st.session_state.profile,
             st.session_state.session_id,
+            conversation_offset=st.session_state.conv_persisted_idx,
         )
+        st.session_state.conv_persisted_idx = len(
+            st.session_state.profile.conversation_history
+        )
+
+
+def _graph_render_key(graph: nx.DiGraph) -> str:
+    """Change when any node status changes so Pyvis iframe refreshes."""
+    snapshot = tuple(
+        sorted(
+            (node_id, graph.nodes[node_id].get("status", "unassessed"))
+            for node_id in graph.nodes
+        )
+    )
+    return str(hash(snapshot))
 
 
 def _append_teaching_entries(
@@ -345,14 +376,18 @@ def _start_session(student_id: str, target_concept: str) -> None:
     ).fetchone()
 
     if row:
+        # Load saved concept statuses; start a fresh chat for this visit.
         profile = db_to_student_profile(
             conn,
             student_id,
             target_concept,
-            include_conversation=True,
+            include_conversation=False,
         )
     else:
         profile = create_profile(student_id, target_concept)
+
+    profile.target_concept = target_concept
+    profile.conversation_history = []
 
     session_id = start_session(conn, student_id, target_concept)
     graph = cached_base_graph().copy()
@@ -364,9 +399,12 @@ def _start_session(student_id: str, target_concept: str) -> None:
     st.session_state.graph = graph
     st.session_state.session_id = session_id
     st.session_state.gap_path = gap_path
+    st.session_state.conv_persisted_idx = 0
     st.session_state.previous_analogy = None
     st.session_state.teaching_retry_n = 0
     st.session_state.awaiting_followup = False
+    st.session_state.current_question = None
+    st.session_state.current_explanation = None
 
     if not gap_path:
         st.session_state.mode = "idle"
@@ -374,7 +412,7 @@ def _start_session(student_id: str, target_concept: str) -> None:
             f"You already know everything needed for "
             f"{_concept_name(graph, target_concept)}."
         )
-        student_profile_to_db(conn, profile, session_id)
+        _persist_profile()
         return
 
     _begin_diagnose_concept(gap_path[0])
@@ -407,6 +445,11 @@ def _render_sidebar() -> tuple[str, str]:
     if st.sidebar.button("Start session", type="primary", disabled=not is_ollama_running()):
         try:
             _start_session(student_id.strip() or "student", target_concept)
+            st.rerun()
+        except (sqlite3.ProgrammingError, sqlite3.OperationalError) as exc:
+            st.session_state.pop("db_conn", None)
+            st.session_state.pop("db_thread_id", None)
+            st.sidebar.error(f"Database error (retry): {exc}")
         except OllamaError as exc:
             st.sidebar.error(str(exc))
 
@@ -415,6 +458,11 @@ def _render_sidebar() -> tuple[str, str]:
         stats = get_graph_stats(graph)
         st.sidebar.markdown("---")
         st.sidebar.markdown("**Knowledge graph**")
+        st.sidebar.caption(
+            "Gray = not assessed yet. Answer the chat question below — "
+            "nodes turn green (known), red (gap), or orange (misconception) "
+            "after each response."
+        )
         for label, color in [
             ("Known", STATUS_COLORS["known"]),
             ("Gap / unknown", STATUS_COLORS["unknown"]),
@@ -434,9 +482,15 @@ def _render_sidebar() -> tuple[str, str]:
             f"Unassessed **{status_counts.get('unassessed', 0)}**"
         )
 
-        html_path = visualize_graph(graph, GRAPH_HTML, height="500px")
+        render_key = _graph_render_key(graph)
+        html_path = REPO_ROOT / "output" / f"concept_graph_{render_key}.html"
+        html_path.parent.mkdir(parents=True, exist_ok=True)
+        visualize_graph(graph, html_path, height="500px")
+        # components.html() does not support `key=` on all Streamlit versions;
+        # unique file path + comment prefix forces a fresh iframe when statuses change.
+        html_body = f"<!-- graph-{render_key} -->\n{html_path.read_text(encoding='utf-8')}"
         components.html(
-            html_path.read_text(encoding="utf-8"),
+            html_body,
             height=520,
             scrolling=True,
         )

@@ -24,6 +24,8 @@ output/
 *.db
 chroma_db/
 .chroma/
+chroma_db_test/
+chroma_db_test_phase7/
 student_profiles/
 .env
 .env.*
