@@ -84,10 +84,14 @@ def init_db(db_path: Path | str = DEFAULT_DB_PATH) -> sqlite3.Connection:
     Returns:
         An open :class:`sqlite3.Connection`. Caller is responsible for
         closing it (or holding it in ``st.session_state`` for Streamlit).
+
+    Note:
+        ``check_same_thread=False`` is required for Streamlit, which may
+        invoke the script from different worker threads across reruns.
     """
     db_path = Path(db_path)
     db_path.parent.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(str(db_path))
+    conn = sqlite3.connect(str(db_path), check_same_thread=False)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys = ON;")
     for statement in _SCHEMA_STATEMENTS:
